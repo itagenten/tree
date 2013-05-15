@@ -32,43 +32,20 @@ extern int Level, *dirs, maxdirs;
 
 extern char *endcode;
 
-/*
-<tree>
-  <directory name="name" mode=0777 size=### user="user" group="group" inode=### dev=### time="00:00 00-00-0000">
-    <link name="name" target="name" ...>
-      ... if link is followed, otherwise this is empty.
-    </link>
-    <file name="name" mode=0777 size=### user="user" group="group" inode=### dev=### time="00:00 00-00-0000"></file>
-    <socket name="" ...><error>some error</error></socket>
-    <block name="" ...></block>
-    <char name="" ...></char>
-    <fifo name="" ...></fifo>
-    <door name="" ...></door>
-    <port name="" ...></port>
-    ...
-  </directory>
-  <report>
-    <size>#</size>
-    <files>#</files>
-    <directories>#</directories>
-  </report>
-</tree>
-*/
 
-/* instead of XML we would like
+/* Instead of XML we would like
 [
   {type: "directory", name: "name", mode: "0777", user: "user", group: "group", inode: ###, dev: ####, time: "00:00 00-00-0000", contents: [
     {type: "link", name: "name", target: "name", contents: [... if link is followed, otherwise this is empty.]}
     {type: "file", name: "name", mode: "0777", size: ###, group: "group", inode: ###, dev: ###, time: "00:00 00-00-0000"}
-    <socket name="" ...><error>some error</error></socket>
-    <block name="" ...></block>
-    <char name="" ...></char>
-    <fifo name="" ...></fifo>
-    <door name="" ...></door>
-    <port name="" ...></port>
-    ...
+    {type: "socket", name="", error="some error" ...}
+    {type: "block", name="" ...},
+    {type: "char", name="" ...},
+    {type: "fifo", name="" ...},
+    {type: "door", name="" ...},
+    {type: "port", name="" ...}
   ]},
-{type: "report", size: ###, files: ###, directories: ###}
+  {type: "report", size: ###, files: ###, directories: ###}
 ]
 */
 
