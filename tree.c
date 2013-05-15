@@ -427,7 +427,8 @@ int main(int argc, char **argv)
     fprintf(outfile,"<?xml version=\"1.0\"");
     if (charset) fprintf(outfile," encoding=\"%s\"",charset);
     fprintf(outfile,"?>\n<tree>\n");
-  }
+  } else if (Jflag)
+    fputc('[',outfile);
 
   if (dirname) {
     for(colored=i=0;dirname[i];i++,colored=0) {
@@ -452,6 +453,8 @@ int main(int argc, char **argv)
 	}
 	fputc('>',outfile);
 	if (mt != S_IFDIR) fprintf(outfile,"%s", dirname[i]);
+      } else if (Jflag) {
+	fprintf(outfile,"{type: \"%s\", name: \"%s\", contents: [", ftype[j], dirname[i]);
       } else if (!Hflag) printit(dirname[i]);
       if (colored) fprintf(outfile,"%s",endcode);
       if (!Hflag) size += listdir(dirname[i],&dtotal,&ftotal,0,0);
@@ -473,10 +476,12 @@ int main(int argc, char **argv)
       size = st.st_size;
     }
     if (Xflag) fprintf(outfile,"  <directory name=\".\">");
+    else if (Jflag) fprintf(outfile, " {type: \"directory\", name: \".\", contents: [");
     else if (!Hflag) fprintf(outfile,".");
     if (colored) fprintf(outfile,"%s",endcode);
     size += listdir(".",&dtotal,&ftotal,0,0);
     if (Xflag) fprintf(outfile,"  </directory>\n");
+    if (Jflag) fprintf(outfile,"  ]}");
   }
 
   if (Hflag)
@@ -489,6 +494,12 @@ int main(int argc, char **argv)
       fprintf(outfile,"    <directories>%d</directories>\n", dtotal);
       if (!dflag) fprintf(outfile,"    <files>%d</files>\n", ftotal);
       fprintf(outfile,"  </report>\n");
+    } else if (Jflag) {
+      fprintf(outfile, ",\n  {type: \"report\"");
+      if (duflag) fprintf(outfile,", size: %lld", size);
+      fprintf(outfile,", directories: %d", dtotal);
+      if (!dflag) fprintf(outfile,", files: %d", ftotal);
+      fputc('}',outfile);
     } else {
       if (duflag) {
 	psize(sizebuf, size);
@@ -511,6 +522,8 @@ int main(int argc, char **argv)
     fprintf(outfile,"</html>\n");
   } else if (Xflag) {
     fprintf(outfile,"</tree>\n");
+  } else if (Jflag) {
+      fprintf(outfile, "\n]\n");
   }
 
   if (outfilename != NULL) fclose(outfile);

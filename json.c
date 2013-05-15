@@ -262,8 +262,8 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
     }
 
     json_fillinfo(*dir);
-    if (mt != S_IFDIR && mt != S_IFLNK && (*dir)->err == NULL) fprintf(outfile,"/>");
-    else fputc('>',outfile);
+    if (mt != S_IFDIR && mt != S_IFLNK && (*dir)->err == NULL) fprintf(outfile,"},");
+    else fprintf(outfile, ", contents: [\n");
 
     if ((*dir)->err) {
       fprintf(outfile,"<error>%s</error>", (*dir)->err);
@@ -289,7 +289,7 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
       nlf = FALSE;
       if (!noindent) json_indent(lev);
     }
-    if (mt == S_IFDIR || mt == S_IFLNK || (*dir)->err != NULL) fprintf(outfile,"</%s>\n",ftype[t]);
+    if (mt == S_IFDIR || mt == S_IFLNK || (*dir)->err != NULL) fprintf(outfile,"]},\n",ftype[t]);
     else putc('\n',outfile);
     dir++;
   }
