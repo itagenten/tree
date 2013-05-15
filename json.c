@@ -148,8 +148,11 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       fputc('"',outfile);
     }
     json_fillinfo(*dir);
-    fputc('}',outfile);
-    fputc(',',outfile); // TODO: Make conditional, last one shouldn't have ,
+    if (!(*dir)->isdir && !(*dir)->lnk) {
+      fputc('}',outfile);
+      fputc(',',outfile); // TODO: Make conditional, last one shouldn't have ,
+    } else
+      fprintf(outfile, ", contents: [");
 
     if ((*dir)->isdir) {
       if ((*dir)->lnk) {
@@ -231,7 +234,7 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
     else mt = (*dir)->mode & S_IFMT;
     for(t=0;ifmt[t];t++)
       if (ifmt[t] == mt) break;
-    fprintf(outfile,"<%s", ftype[t]);
+    fprintf(outfile,"{type: \"%s\"", ftype[t]);
 
     if (fflag) {
       if (sizeof(char) * (strlen(d)+strlen((*dir)->name)+2) > pathsize)
@@ -244,12 +247,12 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
       sprintf(path,"%s",(*dir)->name);
     }
 
-    fprintf(outfile, " name=\"");
+    fprintf(outfile, ", name:\"");
     html_encode(outfile,path);
     fputc('"',outfile);
 
     if ((*dir)->lnk) {
-      fprintf(outfile, " target=\"");
+      fprintf(outfile, ", target:\"");
       html_encode(outfile,(*dir)->lnk);
       fputc('"',outfile);
     }
