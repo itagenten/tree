@@ -55,6 +55,22 @@ extern char *endcode;
 </tree>
 */
 
+/* instead of XML we would like
+[
+  {type: "directory", name: "name", mode: "0777", user: "user", group: "group", inode: ###, dev: ####, time: "00:00 00-00-0000", contents: [
+    {type: "link", name: "name", target: "name", contents: [... if link is followed, otherwise this is empty.]}
+    {type: "file", name: "name", mode: "0777", size: ###, group: "group", inode: ###, dev: ###, time: "00:00 00-00-0000"}
+    <socket name="" ...><error>some error</error></socket>
+    <block name="" ...></block>
+    <char name="" ...></char>
+    <fifo name="" ...></fifo>
+    <door name="" ...></door>
+    <port name="" ...></port>
+    ...
+  ]},
+{type: "report", size: ###, files: ###, directories: ###}
+]
+*/
 
 off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
 {
@@ -77,7 +93,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
 
   sav = dir = read_dir(d,&n);
   if (!dir && n) {
-    fprintf(outfile,"<error>opening dir</error>\n");
+    fprintf(outfile,"<type: error>opening dir</error>\n");
     return 0;
   }
   if (!n) {
@@ -109,7 +125,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
     else mt = (*dir)->mode & S_IFMT;
     for(t=0;ifmt[t];t++)
       if (ifmt[t] == mt) break;
-    fprintf(outfile,"<%s", ftype[t]);
+    fprintf(outfile,"{type: \"%s\"", ftype[t]);
 
     if (fflag) {
       if (sizeof(char) * (strlen(d)+strlen((*dir)->name)+2) > pathsize)
@@ -122,17 +138,18 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       sprintf(path,"%s",(*dir)->name);
     }
 
-    fprintf(outfile, " name=\"");
+    fprintf(outfile, ", name:\"");
     html_encode(outfile,path);
     fputc('"',outfile);
 
     if ((*dir)->lnk) {
-      fprintf(outfile, " target=\"");
+      fprintf(outfile, ", target:\"");
       html_encode(outfile,(*dir)->lnk);
       fputc('"',outfile);
     }
     json_fillinfo(*dir);
-    fputc('>',outfile);
+    fputc('}',outfile);
+    fputc(',',outfile); // TODO: Make conditional, last one shouldn't have ,
 
     if ((*dir)->isdir) {
       if ((*dir)->lnk) {
@@ -167,7 +184,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       nlf = FALSE;
       if (!noindent) json_indent(lev);
     }
-    fprintf(outfile,"</%s>\n",ftype[t]);
+    fprintf(outfile,"\n",ftype[t]);
     dir++;
   }
   dirs[lev] = 0;
@@ -286,18 +303,18 @@ void json_indent(int maxlevel)
 void json_fillinfo(struct _info *ent)
 {
   #ifdef __USE_FILE_OFFSET64
-  if (inodeflag) fprintf(outfile," inode=\"%lld\"",(long long)ent->inode);
+  if (inodeflag) fprintf(outfile,", inode:\"%lld\"",(long long)ent->inode);
   #else
-  if (inodeflag) fprintf(outfile," inode=\"%ld\"",(long int)ent->inode);
+  if (inodeflag) fprintf(outfile,", inode:\"%ld\"",(long int)ent->inode);
   #endif
-  if (devflag) fprintf(outfile, " dev=\"%d\"", (int)ent->dev);
+  if (devflag) fprintf(outfile, ", dev:\"%d\"", (int)ent->dev);
   #ifdef __EMX__
-  if (pflag) fprintf(outfile, " mode=\"%04o\" prot=\"%s\"",ent->attr, prot(ent->attr));
+  if (pflag) fprintf(outfile, ", mode:\"%04o\", prot:\"%s\"",ent->attr, prot(ent->attr));
   #else
-  if (pflag) fprintf(outfile, " mode=\"%04o\" prot=\"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
+  if (pflag) fprintf(outfile, ", mode:\"%04o\", prot:\"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
   #endif
-  if (uflag) fprintf(outfile, " user=\"%s\"", uidtoname(ent->uid));
-  if (gflag) fprintf(outfile, " group=\"%s\"", gidtoname(ent->gid));
-  if (sflag) fprintf(outfile, " size=\"%lld\"", ent->size);
-  if (Dflag) fprintf(outfile, " time=\"%s\"", do_date(cflag? ent->ctime : ent->mtime));
+  if (uflag) fprintf(outfile, ", user:\"%s\"", uidtoname(ent->uid));
+  if (gflag) fprintf(outfile, ", group:\"%s\"", gidtoname(ent->gid));
+  if (sflag) fprintf(outfile, ", size:\"%lld\"", ent->size);
+  if (Dflag) fprintf(outfile, ", time:\"%s\"", do_date(cflag? ent->ctime : ent->mtime));
 }
