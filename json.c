@@ -308,11 +308,11 @@ void json_indent(int maxlevel)
 void json_fillinfo(struct _info *ent)
 {
   #ifdef __USE_FILE_OFFSET64
-  if (inodeflag) fprintf(outfile,", inode:\"%lld\"",(long long)ent->inode);
+  if (inodeflag) fprintf(outfile,", inode: %lld",(long long)ent->inode);
   #else
-  if (inodeflag) fprintf(outfile,", inode:\"%ld\"",(long int)ent->inode);
+  if (inodeflag) fprintf(outfile,", inode:  %ld",(long int)ent->inode);
   #endif
-  if (devflag) fprintf(outfile, ", dev:\"%d\"", (int)ent->dev);
+  if (devflag) fprintf(outfile, ", dev: %d", (int)ent->dev);
   #ifdef __EMX__
   if (pflag) fprintf(outfile, ", mode:\"%04o\", prot:\"%s\"",ent->attr, prot(ent->attr));
   #else
@@ -320,6 +320,6 @@ void json_fillinfo(struct _info *ent)
   #endif
   if (uflag) fprintf(outfile, ", user:\"%s\"", uidtoname(ent->uid));
   if (gflag) fprintf(outfile, ", group:\"%s\"", gidtoname(ent->gid));
-  if (sflag) fprintf(outfile, ", size:\"%lld\"", ent->size);
+  if (sflag) fprintf(outfile, ", size: %lld", ent->size);
   if (Dflag) fprintf(outfile, ", time:\"%s\"", do_date(cflag? ent->ctime : ent->mtime));
 }
