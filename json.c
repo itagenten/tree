@@ -70,7 +70,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
 
   sav = dir = read_dir(d,&n);
   if (!dir && n) {
-    fprintf(outfile,"<type: error>opening dir</error>\n");
+    fprintf(outfile,", error: \"opening dir\"\n");
     return 0;
   }
   if (!n) {
@@ -79,7 +79,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
     return 0;
   }
   if (flimit > 0 && n > flimit) {
-    fprintf(outfile,"<error>%d entries exceeds filelimit, not opening dir</error>\n",n);
+    fprintf(outfile,", error: \"%d entries exceeds filelimit, not opening dir\"\n",n);
     free_dir(sav);
     return 0;
   }
@@ -135,7 +135,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       if ((*dir)->lnk) {
 	if (lflag && !(xdev && dev != (*dir)->dev)) {
 	  if (findino((*dir)->inode,(*dir)->dev)) {
-	    fprintf(outfile,"<error>recursive, not followed</error>");
+	    fprintf(outfile,", error: \"recursive, not followed\"");
 	  } else {
 	    saveino((*dir)->inode, (*dir)->dev);
 	    if (*(*dir)->lnk == '/')
@@ -243,7 +243,7 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
     else fprintf(outfile, ", contents: [\n");
 
     if ((*dir)->err) {
-      fprintf(outfile,"<error>%s</error>", (*dir)->err);
+      fprintf(outfile,", error: \"%s\"", (*dir)->err);
       free((*dir)->err);
       (*dir)->err = NULL;
     }
