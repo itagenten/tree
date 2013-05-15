@@ -208,7 +208,6 @@ int main(int argc, char **argv)
 	  Xflag = TRUE;
 	  break;
 	case 'J':
-	  Hflag = FALSE;
 	  Jflag = TRUE;
 	  break;
 	case 'H':
@@ -399,6 +398,10 @@ int main(int argc, char **argv)
     listdir = (duflag || pruneflag)? xml_rlistdir : xml_listdir;
     colorize = FALSE;
     colored = FALSE; /* Do people want colored XML output? */
+  } else if (Jflag) {
+    listdir = (duflag || pruneflag)? json_rlistdir : json_listdir;
+    colorize = FALSE;
+    colored = FALSE; /* Do people want colored JSON output? */
   } else {
     listdir = (duflag || pruneflag)? unix_rlistdir : unix_listdir;
   }
