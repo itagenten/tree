@@ -138,7 +138,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       sprintf(path,"%s",(*dir)->name);
     }
 
-    fprintf(outfile, ", name:\"");
+    fprintf(outfile, ", name: \"");
     html_encode(outfile,path);
     fputc('"',outfile);
 
@@ -187,7 +187,9 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       nlf = FALSE;
       if (!noindent) json_indent(lev);
     }
-    fprintf(outfile,"\n",ftype[t]);
+    if ((*dir)->isdir || (*dir)->lnk)
+      fprintf(outfile, "]},");
+    fputc('\n', outfile);
     dir++;
   }
   dirs[lev] = 0;
