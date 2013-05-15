@@ -27,7 +27,7 @@ static char *hversion="\t\t tree v1.6.0 %s 1996 - 2011 by Steve Baker and Thomas
 /* Globals */
 bool dflag, lflag, pflag, sflag, Fflag, aflag, fflag, uflag, gflag;
 bool qflag, Nflag, Qflag, Dflag, inodeflag, devflag, hflag, Rflag;
-bool Hflag, siflag, cflag, Xflag, duflag, pruneflag;
+bool Hflag, siflag, cflag, Xflag, Jflag, duflag, pruneflag;
 bool noindent, force_color, nocolor, xdev, noreport, nolinks, flimit, dirsfirst, nosort;
 char *pattern = NULL, *ipattern = NULL, *host = NULL, *title = "Directory Tree", *sp = " ";
 char *timefmt = NULL;
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
   aflag = dflag = fflag = lflag = pflag = sflag = Fflag = uflag = gflag = FALSE;
   Dflag = qflag = Nflag = Qflag = Rflag = hflag = Hflag = siflag = cflag = FALSE;
   noindent = force_color = nocolor = xdev = noreport = nolinks = FALSE;
-  dirsfirst = nosort = inodeflag = devflag = Xflag = FALSE;
+  dirsfirst = nosort = inodeflag = devflag = Xflag = Jflag = FALSE;
   duflag = pruneflag = FALSE;
   flimit = 0;
   dirs = xmalloc(sizeof(int) * (maxdirs=4096));
@@ -206,6 +206,10 @@ int main(int argc, char **argv)
 	case 'X':
 	  Hflag = FALSE;
 	  Xflag = TRUE;
+	  break;
+	case 'J':
+	  Hflag = FALSE;
+	  Jflag = TRUE;
 	  break;
 	case 'H':
 	  Hflag = TRUE;
@@ -564,6 +568,7 @@ void usage(int n)
 	"  -C            Turn colorization on always.\n"
 	"  ------- XML/HTML options -------\n"
 	"  -X            Prints out an XML representation of the tree.\n"
+	"  -J            Prints out an JSON representation of the tree.\n"
 	"  -H baseHREF   Prints out HTML format with baseHREF as top directory.\n"
 	"  -T string     Replace the default HTML title and H1 header with string.\n"
 	"  --nolinks     Turn off hyperlinks in HTML output.\n"

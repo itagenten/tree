@@ -161,6 +161,13 @@ void xmlr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev);
 void xml_indent(int maxlevel);
 void xml_fillinfo(struct _info *ent);
 
+/* json.c */
+off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev);
+off_t json_rlistdir(char *d, int *dt, int *ft, u_long lev, dev_t dev);
+void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev);
+void json_indent(int maxlevel);
+void json_fillinfo(struct _info *ent);
+
 /* color.c */
 void parse_dir_colors();
 int color(u_short mode, char *name, bool orphan, bool islink);
