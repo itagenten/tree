@@ -251,12 +251,12 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
       sprintf(path,"%s",(*dir)->name);
     }
 
-    fprintf(outfile, ", name:\"");
+    fprintf(outfile, ", name: \"");
     html_encode(outfile,path);
     fputc('"',outfile);
 
     if ((*dir)->lnk) {
-      fprintf(outfile, ", target:\"");
+      fprintf(outfile, ", target: \"");
       html_encode(outfile,(*dir)->lnk);
       fputc('"',outfile);
     }
@@ -316,12 +316,12 @@ void json_fillinfo(struct _info *ent)
   #endif
   if (devflag) fprintf(outfile, ", dev: %d", (int)ent->dev);
   #ifdef __EMX__
-  if (pflag) fprintf(outfile, ", mode:\"%04o\", prot:\"%s\"",ent->attr, prot(ent->attr));
+  if (pflag) fprintf(outfile, ", mode: \"%04o\", prot: \"%s\"",ent->attr, prot(ent->attr));
   #else
-  if (pflag) fprintf(outfile, ", mode:\"%04o\", prot:\"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
+  if (pflag) fprintf(outfile, ", mode: \"%04o\", prot: \"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
   #endif
-  if (uflag) fprintf(outfile, ", user:\"%s\"", uidtoname(ent->uid));
-  if (gflag) fprintf(outfile, ", group:\"%s\"", gidtoname(ent->gid));
+  if (uflag) fprintf(outfile, ", user: \"%s\"", uidtoname(ent->uid));
+  if (gflag) fprintf(outfile, ", group: \"%s\"", gidtoname(ent->gid));
   if (sflag) fprintf(outfile, ", size: %lld", ent->size);
-  if (Dflag) fprintf(outfile, ", time:\"%s\"", do_date(cflag? ent->ctime : ent->mtime));
+  if (Dflag) fprintf(outfile, ", time: \"%s\"", do_date(cflag? ent->ctime : ent->mtime));
 }
