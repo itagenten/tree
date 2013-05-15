@@ -182,13 +182,13 @@ off_t json_rlistdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
   struct _info **dir;
   off_t size = 0;
   char *err;
-  
+
   dir = getfulltree(d, lev, dev, &size, &err);
-  
+
   memset(dirs, 0, sizeof(int) * maxdirs);
-  
+
   jsonr_listdir(dir, d, dt, ft, lev);
-  
+
   return size;
 }
 
@@ -199,15 +199,15 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
   struct _info **sav = dir;
   bool nlf = FALSE;
   int mt, t;
-  
+
   if (dir == NULL) return;
-  
+
   dirs[lev] = 1;
   if (!*(dir+1)) dirs[lev] = 2;
   fprintf(outfile,"\n");
-  
+
   path = malloc(pathsize=4096);
-  
+
   while(*dir) {
     if (!noindent) json_indent(lev);
 
@@ -260,7 +260,7 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
       if ((*dir)->isdir) *dt += 1;
       else *ft += 1;
     }
-    
+
     if (*(dir+1) && !*(dir+2)) dirs[lev] = 2;
     if (nlf) {
       nlf = FALSE;
@@ -278,7 +278,7 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
 void json_indent(int maxlevel)
 {
   int i;
-  
+
   fprintf(outfile, "    ");
   for(i=0; i<maxlevel; i++)
     fprintf(outfile, "  ");
