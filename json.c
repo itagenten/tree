@@ -143,15 +143,14 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
     fputc('"',outfile);
 
     if ((*dir)->lnk) {
-      fprintf(outfile, ", target:\"");
+      fprintf(outfile, ", target: \"");
       html_encode(outfile,(*dir)->lnk);
       fputc('"',outfile);
     }
     json_fillinfo(*dir);
     if (!(*dir)->isdir && !(*dir)->lnk) {
       fputc('}',outfile);
-      // I don't know what 'lev' is or why this works:
-      if (dirs[lev] <= 1) fputc(',',outfile);
+      if (*(dir+1)) fputc(',',outfile);
     } else
       fprintf(outfile, ", contents: [");
 
@@ -189,9 +188,8 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       if (!noindent) json_indent(lev);
     }
     if ((*dir)->isdir || (*dir)->lnk) {
-      fprintf(outfile, "]},");
-      // TODO: No comma on last entry of indentation group
-      // if (dirs[lev] <= 1) fputc(',',outfile);
+      fprintf(outfile, "]}");
+      if (*(dir+1)) fputc(',',outfile);
     }
     fputc('\n', outfile);
     dir++;
