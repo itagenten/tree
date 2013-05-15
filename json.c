@@ -70,7 +70,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
 
   sav = dir = read_dir(d,&n);
   if (!dir && n) {
-    fprintf(outfile,", error: \"opening dir\"\n");
+    fprintf(outfile,", \"error\": \"opening dir\"\n");
     return 0;
   }
   if (!n) {
@@ -79,7 +79,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
     return 0;
   }
   if (flimit > 0 && n > flimit) {
-    fprintf(outfile,", error: \"%d entries exceeds filelimit, not opening dir\"\n",n);
+    fprintf(outfile,", \"error\": \"%d entries exceeds filelimit, not opening dir\"\n",n);
     free_dir(sav);
     return 0;
   }
@@ -102,7 +102,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
     else mt = (*dir)->mode & S_IFMT;
     for(t=0;ifmt[t];t++)
       if (ifmt[t] == mt) break;
-    fprintf(outfile,"{type: \"%s\"", ftype[t]);
+    fprintf(outfile,"{\"type\": \"%s\"", ftype[t]);
 
     if (fflag) {
       if (sizeof(char) * (strlen(d)+strlen((*dir)->name)+2) > pathsize)
@@ -115,12 +115,12 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       sprintf(path,"%s",(*dir)->name);
     }
 
-    fprintf(outfile, ", name: \"");
+    fprintf(outfile, ", \"name\": \"");
     html_encode(outfile,path);
     fputc('"',outfile);
 
     if ((*dir)->lnk) {
-      fprintf(outfile, ", target: \"");
+      fprintf(outfile, ", \"target\": \"");
       html_encode(outfile,(*dir)->lnk);
       fputc('"',outfile);
     }
@@ -129,13 +129,13 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       fputc('}',outfile);
       if (*(dir+1)) fputc(',',outfile);
     } else
-      fprintf(outfile, ", contents: [");
+      fprintf(outfile, ", \"contents\": [");
 
     if ((*dir)->isdir) {
       if ((*dir)->lnk) {
 	if (lflag && !(xdev && dev != (*dir)->dev)) {
 	  if (findino((*dir)->inode,(*dir)->dev)) {
-	    fprintf(outfile,", error: \"recursive, not followed\"");
+	    fprintf(outfile,", \"error\": \"recursive, not followed\"");
 	  } else {
 	    saveino((*dir)->inode, (*dir)->dev);
 	    if (*(*dir)->lnk == '/')
@@ -215,7 +215,7 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
     else mt = (*dir)->mode & S_IFMT;
     for(t=0;ifmt[t];t++)
       if (ifmt[t] == mt) break;
-    fprintf(outfile,"{type: \"%s\"", ftype[t]);
+    fprintf(outfile,"{\"type\": \"%s\"", ftype[t]);
 
     if (fflag) {
       if (sizeof(char) * (strlen(d)+strlen((*dir)->name)+2) > pathsize)
@@ -228,22 +228,22 @@ void jsonr_listdir(struct _info **dir, char *d, int *dt, int *ft, u_long lev)
       sprintf(path,"%s",(*dir)->name);
     }
 
-    fprintf(outfile, ", name: \"");
+    fprintf(outfile, ", \"name\": \"");
     html_encode(outfile,path);
     fputc('"',outfile);
 
     if ((*dir)->lnk) {
-      fprintf(outfile, ", target: \"");
+      fprintf(outfile, ", \"target\": \"");
       html_encode(outfile,(*dir)->lnk);
       fputc('"',outfile);
     }
 
     json_fillinfo(*dir);
     if (mt != S_IFDIR && mt != S_IFLNK && (*dir)->err == NULL) fprintf(outfile,"},");
-    else fprintf(outfile, ", contents: [\n");
+    else fprintf(outfile, ", \"contents\": [\n");
 
     if ((*dir)->err) {
-      fprintf(outfile,", error: \"%s\"", (*dir)->err);
+      fprintf(outfile,", \"error\": \"%s\"", (*dir)->err);
       free((*dir)->err);
       (*dir)->err = NULL;
     }
@@ -287,18 +287,18 @@ void json_indent(int maxlevel)
 void json_fillinfo(struct _info *ent)
 {
   #ifdef __USE_FILE_OFFSET64
-  if (inodeflag) fprintf(outfile,", inode: %lld",(long long)ent->inode);
+  if (inodeflag) fprintf(outfile,", \"inode\": %lld",(long long)ent->inode);
   #else
-  if (inodeflag) fprintf(outfile,", inode:  %ld",(long int)ent->inode);
+  if (inodeflag) fprintf(outfile,", \"inode\":  %ld",(long int)ent->inode);
   #endif
-  if (devflag) fprintf(outfile, ", dev: %d", (int)ent->dev);
+  if (devflag) fprintf(outfile, ", \"dev\": %d", (int)ent->dev);
   #ifdef __EMX__
-  if (pflag) fprintf(outfile, ", mode: \"%04o\", prot: \"%s\"",ent->attr, prot(ent->attr));
+  if (pflag) fprintf(outfile, ", \"mode\": \"%04o\", prot: \"%s\"",ent->attr, prot(ent->attr));
   #else
-  if (pflag) fprintf(outfile, ", mode: \"%04o\", prot: \"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
+  if (pflag) fprintf(outfile, ", \"mode\": \"%04o\", prot: \"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
   #endif
-  if (uflag) fprintf(outfile, ", user: \"%s\"", uidtoname(ent->uid));
-  if (gflag) fprintf(outfile, ", group: \"%s\"", gidtoname(ent->gid));
-  if (sflag) fprintf(outfile, ", size: %lld", ent->size);
-  if (Dflag) fprintf(outfile, ", time: \"%s\"", do_date(cflag? ent->ctime : ent->mtime));
+  if (uflag) fprintf(outfile, ", \"user\": \"%s\"", uidtoname(ent->uid));
+  if (gflag) fprintf(outfile, ", \"group\": \"%s\"", gidtoname(ent->gid));
+  if (sflag) fprintf(outfile, ", \"size\": %lld", ent->size);
+  if (Dflag) fprintf(outfile, ", \"time\": \"%s\"", do_date(cflag? ent->ctime : ent->mtime));
 }
