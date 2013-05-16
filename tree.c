@@ -447,16 +447,10 @@ int main(int argc, char **argv)
 	mt = st.st_mode & S_IFMT;
 	for(j=0;ifmt[j];j++)
 	  if (ifmt[j] == mt) break;
-        if (Xflag) {
-	    fprintf(outfile,"  <%s", ftype[j]);
-	    if (mt == S_IFDIR) {
-	      fprintf(outfile, " name=\"%s\"", dirname[i]);
-	    }
-	    fputc('>',outfile);
-        } else if (Jflag)
+        if (Xflag)
+	    fprintf(outfile,"  <%s name=\"%s\">", ftype[j], dirname[i]);
+        else if (Jflag)
             fprintf(outfile," {\"type\": \"%s\", \"name\": \"%s\", \"contents\": [", ftype[j], dirname[i]);
-	if (mt != S_IFDIR) fprintf(outfile,"%s", dirname[i]);
-      } else if (Jflag) {
       } else if (!Hflag) printit(dirname[i]);
       if (colored) fprintf(outfile,"%s",endcode);
       if (!Hflag) size += listdir(dirname[i],&dtotal,&ftotal,0,0);
