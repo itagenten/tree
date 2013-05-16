@@ -454,7 +454,7 @@ int main(int argc, char **argv)
 	fputc('>',outfile);
 	if (mt != S_IFDIR) fprintf(outfile,"%s", dirname[i]);
       } else if (Jflag) {
-	fprintf(outfile,"{\"type\": \"%s\", \"name\": \"%s\", \"contents\": [", ftype[j], dirname[i]);
+	fprintf(outfile," {\"type\": \"%s\", \"name\": \"%s\", \"contents\": [", ftype[j], dirname[i]);
       } else if (!Hflag) printit(dirname[i]);
       if (colored) fprintf(outfile,"%s",endcode);
       if (!Hflag) size += listdir(dirname[i],&dtotal,&ftotal,0,0);
@@ -468,6 +468,7 @@ int main(int argc, char **argv)
 	}
       }
       if (Xflag) fprintf(outfile,"  </%s>\n",ftype[j]);
+      if (Jflag) fprintf(outfile,"  ]}");
     }
   } else {
     if ((n = lstat(".",&st)) >= 0) {
@@ -499,7 +500,7 @@ int main(int argc, char **argv)
       if (duflag) fprintf(outfile,", \"size\": %lld", size);
       fprintf(outfile,", \"directories\": %d", dtotal);
       if (!dflag) fprintf(outfile,", \"files\": %d", ftotal);
-      fputc('}',outfile);
+      fprintf(outfile, "}");
     } else {
       if (duflag) {
 	psize(sizebuf, size);
