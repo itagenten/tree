@@ -443,18 +443,20 @@ int main(int argc, char **argv)
 	if (colorize) colored = color(st.st_mode,dirname[i],n<0,FALSE);
 	size += st.st_size;
       }
-      if (Xflag) {
+      if (Xflag || Jflag) {
 	mt = st.st_mode & S_IFMT;
 	for(j=0;ifmt[j];j++)
 	  if (ifmt[j] == mt) break;
-	fprintf(outfile,"  <%s", ftype[j]);
-	if (mt == S_IFDIR) {
-	  fprintf(outfile, " name=\"%s\"", dirname[i]);
-	}
-	fputc('>',outfile);
+        if (Xflag) {
+	    fprintf(outfile,"  <%s", ftype[j]);
+	    if (mt == S_IFDIR) {
+	      fprintf(outfile, " name=\"%s\"", dirname[i]);
+	    }
+	    fputc('>',outfile);
+        } else if (Jflag)
+            fprintf(outfile," {\"type\": \"%s\", \"name\": \"%s\", \"contents\": [", ftype[j], dirname[i]);
 	if (mt != S_IFDIR) fprintf(outfile,"%s", dirname[i]);
       } else if (Jflag) {
-	fprintf(outfile," {\"type\": \"%s\", \"name\": \"%s\", \"contents\": [", ftype[j], dirname[i]);
       } else if (!Hflag) printit(dirname[i]);
       if (colored) fprintf(outfile,"%s",endcode);
       if (!Hflag) size += listdir(dirname[i],&dtotal,&ftotal,0,0);
