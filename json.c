@@ -33,7 +33,7 @@ extern int Level, *dirs, maxdirs;
 extern char *endcode;
 
 
-/* Target format:
+/*
 [
   {"type": "directory", "name": "name", "mode": "0777", "user": "user", "group": "group", "inode": ###, "dev": ####, "time": "00:00 00-00-0000", "contents": [
     {"type": "link", "name": "name", "target": "name", "contents": [... if link is followed, otherwise this is empty.]}
@@ -70,7 +70,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
 
   sav = dir = read_dir(d,&n);
   if (!dir && n) {
-    fprintf(outfile,", \"error\": \"opening dir\"\n");
+    fprintf(outfile,"{\"error\": \"opening dir\"}\n");
     return 0;
   }
   if (!n) {
