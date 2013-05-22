@@ -579,7 +579,7 @@ void usage(int n)
 	"  -S            Print with ASCII graphics indentation lines.\n"
 	"  -n            Turn colorization off always (-C overrides).\n"
 	"  -C            Turn colorization on always.\n"
-	"  ------- XML/HTML options -------\n"
+	"  ------- XML/HTML/JSON options -------\n"
 	"  -X            Prints out an XML representation of the tree.\n"
 	"  -J            Prints out an JSON representation of the tree.\n"
 	"  -H baseHREF   Prints out HTML format with baseHREF as top directory.\n"

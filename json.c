@@ -135,7 +135,7 @@ off_t json_listdir(char *d, int *dt, int *ft, u_long lev, dev_t dev)
       if ((*dir)->lnk) {
 	if (lflag && !(xdev && dev != (*dir)->dev)) {
 	  if (findino((*dir)->inode,(*dir)->dev)) {
-	    fprintf(outfile,", \"error\": \"recursive, not followed\"");
+	    fprintf(outfile,"{\"error\": \"recursive, not followed\"}");
 	  } else {
 	    saveino((*dir)->inode, (*dir)->dev);
 	    if (*(*dir)->lnk == '/')
