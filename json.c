@@ -33,19 +33,19 @@ extern int Level, *dirs, maxdirs;
 extern char *endcode;
 
 
-/* Instead of XML we would like
+/* Target format:
 [
-  {type: "directory", name: "name", mode: "0777", user: "user", group: "group", inode: ###, dev: ####, time: "00:00 00-00-0000", contents: [
-    {type: "link", name: "name", target: "name", contents: [... if link is followed, otherwise this is empty.]}
-    {type: "file", name: "name", mode: "0777", size: ###, group: "group", inode: ###, dev: ###, time: "00:00 00-00-0000"}
-    {type: "socket", name="", error="some error" ...}
-    {type: "block", name="" ...},
-    {type: "char", name="" ...},
-    {type: "fifo", name="" ...},
-    {type: "door", name="" ...},
-    {type: "port", name="" ...}
+  {"type": "directory", "name": "name", "mode": "0777", "user": "user", "group": "group", "inode": ###, "dev": ####, "time": "00:00 00-00-0000", "contents": [
+    {"type": "link", "name": "name", "target": "name", "contents": [... if link is followed, otherwise this is empty.]}
+    {"type": "file", "name": "name", "mode": "0777", "size": ###, "group": "group", "inode": ###, "dev": ###, "time": "00:00 00-00-0000"}
+    {"type": "socket", "name": "", "error": "some error" ...}
+    {"type": "block", "name": "" ...},
+    {"type": "char", "name": "" ...},
+    {"type": "fifo", "name": "" ...},
+    {"type": "door", "name": "" ...},
+    {"type": "port", "name": "" ...}
   ]},
-  {type: "report", size: ###, files: ###, directories: ###}
+  {"type": "report", "size": ###, "files": ###, "directories": ###}
 ]
 */
 
