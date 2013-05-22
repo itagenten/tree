@@ -293,9 +293,9 @@ void json_fillinfo(struct _info *ent)
   #endif
   if (devflag) fprintf(outfile, ", \"dev\": %d", (int)ent->dev);
   #ifdef __EMX__
-  if (pflag) fprintf(outfile, ", \"mode\": \"%04o\", prot: \"%s\"",ent->attr, prot(ent->attr));
+  if (pflag) fprintf(outfile, ", \"mode\": \"%04o\", \"prot\": \"%s\"",ent->attr, prot(ent->attr));
   #else
-  if (pflag) fprintf(outfile, ", \"mode\": \"%04o\", prot: \"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
+  if (pflag) fprintf(outfile, ", \"mode\": \"%04o\", \"prot\": \"%s\"", ent->mode & (S_IRWXU|S_IRWXG|S_IRWXO|S_ISUID|S_ISGID|S_ISVTX), prot(ent->mode));
   #endif
   if (uflag) fprintf(outfile, ", \"user\": \"%s\"", uidtoname(ent->uid));
   if (gflag) fprintf(outfile, ", \"group\": \"%s\"", gidtoname(ent->gid));
